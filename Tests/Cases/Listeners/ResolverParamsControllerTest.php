@@ -49,7 +49,8 @@ class ResolverParamsControllerTest extends BaseTestCase
             ['params' =>
                 ['classes_controllers' => [
                     AbstractController::class
-                ]
+                ],
+                    'process_only_non_service_controller' => false
                 ]
             ]
         );
@@ -73,12 +74,20 @@ class ResolverParamsControllerTest extends BaseTestCase
     {
         $event = $this->getMockControllerEvent(true);
 
+        $this->class = new class{
+            public function action(Request $request, SampleService $service)
+            {
+                return new Response('OK');
+            }
+        };
+
         $this->obTestObject = new ResolverParamsController(
             static::$testContainer->get('custom_arguments_resolvers.controller_argument.processor'),
             ['params' =>
                 ['classes_controllers' => [
                     get_class($this->class)
-                ]
+                ],
+                    'process_only_non_service_controller' => false
                 ]
             ]
         );
@@ -86,8 +95,9 @@ class ResolverParamsControllerTest extends BaseTestCase
         $this->obTestObject->handle($event);
         $attributes = $event->getRequest()->attributes->all();
 
-        $this->assertEmpty(
-            $attributes['service'],
+        $this->assertArrayNotHasKey(
+            'service',
+            $attributes,
             'Класс, не подлежащий обработке проскочил сквозь процесс.'
         );
     }
