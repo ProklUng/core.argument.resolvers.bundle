@@ -59,6 +59,9 @@ class ValidatorRequestCsrfTokenTest extends BaseTestCase
      * @return void
      *
      * @throws WrongCsrfException
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function testHandleValidCsrfToken() : void
     {
@@ -83,6 +86,9 @@ class ValidatorRequestCsrfTokenTest extends BaseTestCase
      * @return void
      *
      * @throws WrongCsrfException
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function testHandleInvalidCsrfToken() : void
     {
@@ -107,6 +113,9 @@ class ValidatorRequestCsrfTokenTest extends BaseTestCase
      *
      * @return void
      * @throws WrongCsrfException
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function testHandleNonMasterRequest() : void
     {

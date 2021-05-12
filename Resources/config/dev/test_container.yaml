@@ -1,4 +1,5 @@
 parameters:
+  csrf_protection: true
   custom_arguments_resolvers:
     defaults:
       enabled: true
@@ -20,6 +21,11 @@ services:
 
   # Прямой алиас сервис-контейнера Symfony. @service_container - deprecated.
   Psr\Container\ContainerInterface: '@service_container'
+
+  session.instance:
+    class: Symfony\Component\HttpFoundation\Session\Session
+
+  Symfony\Component\HttpFoundation\Session\SessionInterface: '@session.instance'
 
   # Параметры приложения.
   parameter_bag:

@@ -140,22 +140,4 @@ class ResolveDependencyMakerTest extends BaseTestCase
             'Несуществующая связка проскочила.'
         );
     }
-
-    /**
-     * setDepends ().
-     */
-    public function testSetDepends() : void
-    {
-        $value = [
-            'test' => 'test'
-        ];
-
-        $this->testObject->setDepends($value);
-
-        $this->assertSameProtectedProp(
-            'arDepends',
-            $value,
-            'Сеттер не сработал.'
-        );
-    }
 }

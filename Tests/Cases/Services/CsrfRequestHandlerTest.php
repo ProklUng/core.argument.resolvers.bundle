@@ -35,9 +35,15 @@ class CsrfRequestHandlerTest extends BaseTestCase
     }
 
     /**
-    * validateCsrfToken().
-    *
-    */
+     * validateCsrfToken().
+     *
+     * @return void
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     *
+     * @throws WrongCsrfException
+     */
     public function testValidateCsrfToken() : void
     {
         $result = $this->obTestObject->validateCsrfToken(
@@ -52,6 +58,11 @@ class CsrfRequestHandlerTest extends BaseTestCase
 
     /**
      * testValidateCsrfTokenInvalid().
+     *
+     * @return void
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function testValidateCsrfTokenInvalid() : void
     {

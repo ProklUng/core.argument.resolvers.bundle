@@ -50,6 +50,9 @@ class SecurityTokenTest extends BaseTestCase
      * @throws WrongSecurityTokenException|WrongCsrfException Ошибка проверки токена.
      *
      * @dataProvider dataProviderTrueFalse
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function testHandle(bool $traitable) : void
     {
@@ -78,11 +81,13 @@ class SecurityTokenTest extends BaseTestCase
      * @throws WrongSecurityTokenException|WrongCsrfException Ошибка проверки токена.
      *
      * @dataProvider dataProviderTrueFalse
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function testHandleInvalidToken(bool $traitable) : void
     {
         $event = $this->getMockControllerEvent(true, $traitable);
-        $event->getRequest()->request->set('security.token', $this->faker->slug);
+        $event->getRequest()->request->set('security.token', 'fake_slug');
 
         if ($traitable) {
             $this->expectException(WrongSecurityTokenException::class);
@@ -107,6 +112,9 @@ class SecurityTokenTest extends BaseTestCase
      * @throws WrongSecurityTokenException|WrongCsrfException Ошибка проверки токена.
      *
      * @dataProvider dataProviderTrueFalse
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function testHandleEmptyToken(bool $traitable) : void
     {
@@ -137,6 +145,9 @@ class SecurityTokenTest extends BaseTestCase
      * @throws WrongSecurityTokenException
      * @throws WrongCsrfException
      * @dataProvider dataProviderTrueFalse
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function testHandleValidToken(bool $traitable) : void
     {

@@ -22,11 +22,6 @@ class ResolveParamsFromContainerTest extends BaseTestCase
      */
     protected $obTestObject;
 
-    /**
-     * @var ContainerBuilder $container
-     */
-    private $container;
-
     protected function setUp(): void
     {
         parent::setUp();

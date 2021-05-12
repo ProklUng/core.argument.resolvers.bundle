@@ -356,37 +356,6 @@ class CustomArgumentResolverProcessorTest extends BaseTestCase
     }
 
     /**
-     * @return void
-     * @throws Exception
-     *
-     */
-    public function testArgumentResolver(): void
-    {
-        /**
-         * @var ArgumentResolver $app
-         */
-        $app = self::$testContainer->get('argument_resolver');
-
-        $request = new Request(
-            [],
-            [],
-            [
-                '_controller' => 'Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleController::action8',
-                'obj' => SampleController::class,
-            ]
-        );
-
-        $request->attributes->add(['value' => 'OK3', 'id' => 1, 'array' => []]);
-
-        $app->getArguments($request, [new SampleController(), 'action5']);
-
-        $this->assertSame(
-            [1, 2, [$this->container->getParameter('kernel.cache_dir')], [$this->container->get('symfony.session.instance')]],
-            $request->attributes->get('array')
-        );
-    }
-
-    /**
      * Мок ControllerEvent.
      *
      * @param Request $request
@@ -404,7 +373,7 @@ class CustomArgumentResolverProcessorTest extends BaseTestCase
         $controller = $controllerResolver->getController($request);
 
         return new ControllerEvent(
-            $this->container->get('kernel'),
+            $this->getMockKernel(),
             $controller,
             $request,
             HttpKernelInterface::MASTER_REQUEST

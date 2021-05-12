@@ -100,12 +100,12 @@ class FormUrlencodedTreatmentTest extends BaseTestCase
     public function dataProviderValidContentType() : array
     {
         return [
-          'x-www-form-urlencoded-string' => [ 'application/x-www-form-urlencoded', [$this->faker->slug => $this->faker->slug] ],
-          'x-www-form-urlencoded-integer' =>[ 'application/x-www-form-urlencoded', [$this->faker->slug => 111] ],
-          'x-www-form-urlencoded-nulled' =>[ 'application/x-www-form-urlencoded', [$this->faker->slug => null] ],
-          'application/json-integer' => [ 'application/json', [$this->faker->slug => 111] ],
-          'application/json-string' => [ 'application/json', [$this->faker->slug => $this->faker->slug] ],
-          'application/json-nulled' => [ 'application/json', [$this->faker->slug => null] ],
+          'x-www-form-urlencoded-string' => [ 'application/x-www-form-urlencoded', ['fake_slug' => 'fake_slug'] ],
+          'x-www-form-urlencoded-integer' =>[ 'application/x-www-form-urlencoded', ['fake_slug' => 111] ],
+          'x-www-form-urlencoded-nulled' =>[ 'application/x-www-form-urlencoded', ['fake_slug' => null] ],
+          'application/json-integer' => [ 'application/json', ['fake_slug' => 111] ],
+          'application/json-string' => [ 'application/json', ['fake_slug' => 'fake_slug'] ],
+          'application/json-nulled' => [ 'application/json', ['fake_slug' => null] ],
           'application/json-void' => [ 'application/json', [] ],
         ];
     }
@@ -118,10 +118,10 @@ class FormUrlencodedTreatmentTest extends BaseTestCase
     public function dataProviderInvalidContentType() : array
     {
         return [
-            'application/html' => [ 'application/html', [$this->faker->slug => $this->faker->slug] ],
-            'application/atom+xml' => [ 'application/atom+xml', [$this->faker->slug => $this->faker->slug] ],
-            'application/javascript' => [ 'application/javascript', [$this->faker->slug => $this->faker->slug] ],
-            'application/gzip' => [ 'application/gzip', [$this->faker->slug => $this->faker->slug] ],
+            'application/html' => [ 'application/html', ['fake_slug' => 'fake_slug'] ],
+            'application/atom+xml' => [ 'application/atom+xml', ['fake_slug' => 'fake_slug'] ],
+            'application/javascript' => [ 'application/javascript', ['fake_slug' => 'fake_slug'] ],
+            'application/gzip' => [ 'application/gzip', ['fake_slug' => 'fake_slug'] ],
             'application/json-null' => [ 'application/json', null ],
         ];
     }
