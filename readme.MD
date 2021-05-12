@@ -53,5 +53,5 @@ custom_arguments_resolvers:
 - `custom_arguments_resolvers.argument_resolver.set_container` - пропихивание контейнера в контроллер
 - `custom_arguments_resolvers.argument_resolver.ajax_call` - проверка вызова на AJAX
 - `custom_arguments_resolvers.argument_resolver.from_container` - ресолвинг аргументов из контейнера
-- `custom_arguments_resolvers.boot_trait` - bootable traits
+- `custom_arguments_resolvers.boot_trait` - bootable traits (по аналоги [c](https://medium.com/swlh/laravel-booting-and-initializing-models-with-traits-2f77059b1915))
 - `custom_arguments_resolvers.argument_resolver.user_permission_check` - проверка прав на роут
