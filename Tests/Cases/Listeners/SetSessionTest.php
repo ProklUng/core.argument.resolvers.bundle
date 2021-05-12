@@ -69,7 +69,7 @@ class SetSessionTest extends BaseTestCase
         $request = $this->getFakeRequest();
 
         return new RequestEvent(
-            static::$testContainer->get('kernel'),
+            $this->getMockKernel(),
             $request,
             $masterRequest ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST
         );

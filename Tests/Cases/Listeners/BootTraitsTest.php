@@ -111,7 +111,7 @@ class BootTraitsTest extends BaseTestCase
         $controller = $controllerResolver->getController($request);
 
         return new ControllerEvent(
-            static::$testContainer->get('kernel'),
+            $this->getMockKernel(),
             $controller,
             $request,
             HttpKernelInterface::MASTER_REQUEST

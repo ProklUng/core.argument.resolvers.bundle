@@ -3,6 +3,7 @@
 namespace Prokl\CustomArgumentResolverBundle\Tests\Cases\Listeners;
 
 use Exception;
+use Mockery;
 use Prokl\CustomArgumentResolverBundle\Event\Exceptions\InvalidAjaxCallException;
 use Prokl\CustomArgumentResolverBundle\Event\Listeners\AjaxCall;
 use Prokl\CustomArgumentResolverBundle\Event\Traits\ValidatorTraits\SecurityAjaxCallTrait;
@@ -84,7 +85,7 @@ class AjaxCallTest extends BaseTestCase
         $controller = $controllerResolver->getController($request);
 
         return new ControllerEvent(
-            static::$testContainer->get('kernel'),
+            $this->getMockKernel(),
             $controller,
             $request,
             HttpKernelInterface::MASTER_REQUEST

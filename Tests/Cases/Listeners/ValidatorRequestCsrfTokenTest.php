@@ -138,7 +138,7 @@ class ValidatorRequestCsrfTokenTest extends BaseTestCase
         $request = $this->getFakeRequest($validToken);
 
         return new RequestEvent(
-            static::$testContainer->get('kernel'),
+            $this->getMockKernel(),
             $request,
             $masterRequest ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST
         );

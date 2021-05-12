@@ -139,7 +139,7 @@ class FormUrlencodedTreatmentTest extends BaseTestCase
         $request = $this->getFakeRequest($contentType, $content);
 
         return new RequestEvent(
-            static::$testContainer->get('kernel'),
+            $this->getMockKernel(),
             $request,
             HttpKernelInterface::MASTER_REQUEST
         );

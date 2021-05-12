@@ -212,7 +212,7 @@ class SecurityTokenTest extends BaseTestCase
         $controller = $controllerResolver->getController($request);
 
         return new ControllerEvent(
-            static::$testContainer->get('kernel'),
+            $this->getMockKernel(),
             $controller,
             $request,
             $masterRequest ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST

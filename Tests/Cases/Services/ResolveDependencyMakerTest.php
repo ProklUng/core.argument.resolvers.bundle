@@ -8,7 +8,7 @@ use Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleDependencyInterfaceRe
 use Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleDependencyInterfaceUnrealized;
 use Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleServiceNested;
 use Prokl\CustomArgumentResolverBundle\Tests\Tools\BaseTestCase;
-use Prokl\CustomArgumentResolverBundle\Tests\Tools\PHPUnitUtils;
+use Prokl\TestingTools\Tools\PHPUnitUtils;
 
 /**
  * Class ResolveDependencyMaker

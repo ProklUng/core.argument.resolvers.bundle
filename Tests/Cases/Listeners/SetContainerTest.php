@@ -2,10 +2,9 @@
 
 namespace Prokl\CustomArgumentResolverBundle\Tests\Cases\Listeners;
 
-use Exception;
 use Prokl\CustomArgumentResolverBundle\Event\Listeners\SetContainer;
 use Prokl\CustomArgumentResolverBundle\Tests\Tools\BaseTestCase;
-use Prokl\CustomArgumentResolverBundle\Tests\Tools\PHPUnitUtils;
+use Prokl\TestingTools\Tools\PHPUnitUtils;
 use ReflectionException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -124,7 +123,7 @@ class SetContainerTest extends BaseTestCase
         $controller = $controllerResolver->getController($request);
 
         return new ControllerEvent(
-            static::$testContainer->get('kernel'),
+            $this->getMockKernel(),
             $controller,
             $request,
             $masterRequest ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST

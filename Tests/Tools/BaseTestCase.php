@@ -10,6 +10,7 @@ use Prokl\TestingTools\Tools\Container\BuildContainer;
 use Prokl\TestingTools\Traits\ExceptionAsserts;
 use Prokl\TestingTools\Traits\PHPUnitTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class BaseTestCase
@@ -50,5 +51,17 @@ class BaseTestCase extends \Prokl\TestingTools\Base\BaseTestCase
         );
 
         parent::setUp();
+    }
+
+    /**
+     * Мок сервиса kernel.
+     *
+     * @return mixed
+     */
+    protected function getMockKernel()
+    {
+        $mock = Mockery::mock(HttpKernelInterface::class);
+
+        return $mock;
     }
 }
