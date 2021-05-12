@@ -54,3 +54,4 @@ custom_arguments_resolvers:
 - `custom_arguments_resolvers.argument_resolver.ajax_call` - проверка вызова на AJAX
 - `custom_arguments_resolvers.argument_resolver.from_container` - ресолвинг аргументов из контейнера
 - `custom_arguments_resolvers.boot_trait` - bootable traits
+- `custom_arguments_resolvers.argument_resolver.user_permission_check` - проверка прав на роут

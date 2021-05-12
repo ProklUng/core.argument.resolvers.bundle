@@ -12,6 +12,6 @@ services:
 
   # Проверка прав на роут.
   custom_arguments_resolvers.argument_resolver.user_permission_check:
-    class: Prokl\CustomArgumentResolverBundle\Event\Listeners\UserPermissions
+    class: Prokl\CustomArgumentResolverBundle\Event\Listeners\UserPermissionsWordpress
     tags:
       - { name: kernel.event_listener, event: kernel.controller, method: handle, priority: 1 }
