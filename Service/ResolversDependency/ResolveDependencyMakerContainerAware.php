@@ -68,7 +68,7 @@ class ResolveDependencyMakerContainerAware extends ResolveDependencyMaker
                 return $realizationAbstractClass;
             }
 
-            return $this->resolveDependencies($realizationAbstractClass, $arDepends);
+            return $this->resolveDependencies((string)$realizationAbstractClass, $arDepends);
         }
 
         // Fetch the constructor (instance of ReflectionMethod)

@@ -36,7 +36,7 @@ class ResolveDependencyMaker
     /**
      * Разрешить зависимости callable.
      *
-     * @param string|callable $callable
+     * @param string $callable
      *
      * @return array|null
      * @throws RuntimeException
@@ -178,13 +178,9 @@ class ResolveDependencyMaker
                 continue;
             }
 
-            $paramClass = $param->getClass();
-            if ($paramClass) {
-                $paramClass = $paramClass->getName();
-            }
+            $paramClass = $param->getClass()->getName();
 
-            $paramClass = (string)$paramClass;
-
+            /** @psalm-suppress DocblockTypeContradiction */
             if (!class_exists($paramClass)) {
                 throw new RuntimeException(
                     sprintf(

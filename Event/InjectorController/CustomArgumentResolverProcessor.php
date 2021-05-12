@@ -32,6 +32,7 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
  * как угодно. Для совместимости с нативным Symfony.
  * @since 02.02.2021 Выпиливание ResolveParamsFromContainer.
  */
+/** @psalm-suppress PropertyNotSetInConstructor */
 class CustomArgumentResolverProcessor implements InjectorControllerInterface
 {
     use ContainerAwareTrait;
@@ -87,7 +88,6 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
      */
     private function injectArgumentsToController(ControllerEvent $event): ControllerEvent
     {
-        /** @var array $arArguments Аргументы контроллера. */
         try {
             $arArguments = $this->getArguments(
                 $event->getRequest(),
@@ -366,8 +366,8 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
                 $resolvedVarValue = $this->container->getParameter($containerVar);
                 $resolvedVariable = true;
 
-                if ($this->container->has((string)$resolvedVarValue)) {
-                    $resolvedVarValue = '@' . $resolvedVarValue;
+                if (!is_array($resolvedVarValue) && $this->container->has((string)$resolvedVarValue)) {
+                    $resolvedVarValue = '@' . (string)$resolvedVarValue;
                 }
 
                 $argItem = $resolvedVarValue;
@@ -377,10 +377,8 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
         }
 
         // Если использован алиас сервиса, то попробовать получить его из контейнера.
-        if (strpos((string)$argItem, '@') === 0) {
-            $resolvedService = $this->container->get(
-                ltrim($argItem, '@')
-            );
+        if (is_string($argItem) && strpos($argItem, '@') === 0) {
+            $resolvedService = $this->container->get(ltrim($argItem, '@'));
 
             if ($resolvedService !== null) {
                 return $resolvedService;

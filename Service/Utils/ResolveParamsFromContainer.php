@@ -38,7 +38,7 @@ class ResolveParamsFromContainer
                 $resolvedVarValue = $this->container->getParameter($containerVar);
                 $resolvedVariable = true;
 
-                if ($this->container->has((string)$resolvedVarValue)) {
+                if (is_string($resolvedVarValue) && $this->container->has($resolvedVarValue)) {
                     $resolvedVarValue = '@' . $resolvedVarValue;
                 }
 
@@ -49,10 +49,8 @@ class ResolveParamsFromContainer
         }
 
         // Если использован алиас сервиса, то попробовать получить его из контейнера.
-        if (strpos($argItem, '@') === 0) {
-            $resolvedService = $this->container->get(
-                ltrim($argItem, '@')
-            );
+        if (is_string($argItem) && strpos($argItem, '@') === 0) {
+            $resolvedService = $this->container->get(ltrim($argItem, '@'));
 
             if ($resolvedService !== null) {
                 return $resolvedService;

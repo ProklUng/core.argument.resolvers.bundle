@@ -40,10 +40,12 @@ class UserPermissionsWordpress implements OnControllerRequestHandlerInterface
         }
 
         $request = $event->getRequest();
+        /** @psalm-suppress UndefinedFunction */
         $user = wp_get_current_user();
         $isGranted = $request->get(self::ROUTE_PARAM_NAME);
 
         // Админам можно всё.
+        /** @psalm-suppress UndefinedFunction */
         if (!$isGranted || current_user_can('administrator')) {
             return;
         }

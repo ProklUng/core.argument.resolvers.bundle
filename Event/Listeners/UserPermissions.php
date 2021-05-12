@@ -43,6 +43,7 @@ class UserPermissions implements OnControllerRequestHandlerInterface
      *
      * @param CUser     $user        Битриксовый CUser.
      * @param UserTable $userManager Работа с пользователями D7.
+     * @psalm-suppress UndefinedClass
      */
     public function __construct(
         CUser $user,
@@ -64,6 +65,7 @@ class UserPermissions implements OnControllerRequestHandlerInterface
      * @throws AnonymousDenyAccessException Анонимным пользователям вход воспрещен.
      * @throws UserDenyAccessException      В доступе отказано по правам.
      * @throws ArgumentException | ObjectPropertyException | SystemException
+     * @psalm-suppress UndefinedDocblockClass
      */
     public function handle(ControllerEvent $event): void
     {
@@ -105,6 +107,7 @@ class UserPermissions implements OnControllerRequestHandlerInterface
      *
      * @return array
      *
+     * @psalm-suppress UndefinedDocblockClass
      * @throws ArgumentException | ObjectPropertyException | SystemException
      */
     private function getUserGroupCodes(int $userId) : array
@@ -112,10 +115,12 @@ class UserPermissions implements OnControllerRequestHandlerInterface
         $groups = [];
 
         if($userId > 0) {
+            /** @psalm-suppress UndefinedClass */
             $nowTimeExpression = new SqlExpression(
                 $this->userManager::getEntity()->getConnection()->getSqlHelper()->getCurrentDateTimeFunction()
             );
 
+            /** @psalm-suppress UndefinedClass */
             $result = GroupTable::getList([
                 'select' => ['STRING_ID'],
                 'filter' => [

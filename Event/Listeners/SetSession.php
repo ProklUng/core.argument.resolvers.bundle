@@ -39,8 +39,7 @@ class SetSession implements OnKernelRequestHandlerInterface
 
         $request = $event->getRequest();
 
-        $request->setSession(
-            $this->container->get('session.instance')
-        );
+        /** @psalm-suppress PossiblyNullArgument */
+        $request->setSession($this->container->get('session.instance'));
     }
 }
