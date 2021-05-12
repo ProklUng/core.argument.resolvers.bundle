@@ -15,4 +15,3 @@ services:
     class: Prokl\CustomArgumentResolverBundle\Event\Listeners\UserPermissions
     tags:
       - { name: kernel.event_listener, event: kernel.controller, method: handle, priority: 1 }
-

@@ -43,3 +43,14 @@ custom_arguments_resolvers:
       - 'Symfony\Bundle\FrameworkBundle\Controller\AbstractController'
       - 'Symfony\Bundle\FrameworkBundle\Controller\Controller'
 ```
+
+## Комплект
+
+- `custom_arguments_resolvers.argument_resolver.set_session` - установить сессию Symfony для всех запросов к контроллерам
+- `custom_arguments_resolvers.argument_resolver.validator_csrf_token` - валидатор CSRF токена
+- `custom_arguments_resolvers.argument_resolver.security_token_checker` - проверка токена безопасности (по трейту `SecurityTokenTrait`)
+- `custom_arguments_resolvers.argument_resolver.form_url_encoded` - обработка запросов x-www-form-urlencoded
+- `custom_arguments_resolvers.argument_resolver.set_container` - пропихивание контейнера в контроллер
+- `custom_arguments_resolvers.argument_resolver.ajax_call` - проверка вызова на AJAX
+- `custom_arguments_resolvers.argument_resolver.from_container` - ресолвинг аргументов из контейнера
+- `custom_arguments_resolvers.boot_trait` - bootable traits

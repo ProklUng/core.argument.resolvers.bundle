@@ -4,3 +4,14 @@ services:
     autowire: true
     autoconfigure: true
     public: true
+
+  ####################
+  # kernel.controller
+  ####################
+
+
+  # Проверка прав на роут.
+  custom_arguments_resolvers.argument_resolver.user_permission_check:
+    class: Prokl\CustomArgumentResolverBundle\Event\Listeners\UserPermissions
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller, method: handle, priority: 1 }
