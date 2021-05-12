@@ -34,12 +34,9 @@ class CustomArgumentResolverProcessorTest extends BaseTestCase
     /** @var string $controllerClass Класс контроллера для теста. */
     private $controllerClass = SampleController::class;
 
-    private $container;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->container = static::$testContainer;
 
         $this->testObject = new CustomArgumentResolverProcessor(
             $this->container->get('custom_arguments_resolvers.container.aware.resolver'),
@@ -368,7 +365,7 @@ class CustomArgumentResolverProcessorTest extends BaseTestCase
         /**
          * @var ArgumentResolver $app
          */
-        $app = container()->get('argument_resolver');
+        $app = self::$testContainer->get('argument_resolver');
 
         $request = new Request(
             [],
@@ -384,7 +381,7 @@ class CustomArgumentResolverProcessorTest extends BaseTestCase
         $app->getArguments($request, [new SampleController(), 'action5']);
 
         $this->assertSame(
-            [1, 2, [$this->container->getParameter('kernel.cache_dir')], [$this->container->get('session.instance')]],
+            [1, 2, [$this->container->getParameter('kernel.cache_dir')], [$this->container->get('symfony.session.instance')]],
             $request->attributes->get('array')
         );
     }

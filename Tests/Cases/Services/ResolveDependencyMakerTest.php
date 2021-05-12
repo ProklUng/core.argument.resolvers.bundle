@@ -6,7 +6,6 @@ use Prokl\CustomArgumentResolverBundle\Service\ResolversDependency\ResolveDepend
 use Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleDependencyInterface;
 use Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleDependencyInterfaceRealization;
 use Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleDependencyInterfaceUnrealized;
-use Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleInjectableAutoResolved;
 use Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleServiceNested;
 use Prokl\CustomArgumentResolverBundle\Tests\Tools\BaseTestCase;
 use Prokl\CustomArgumentResolverBundle\Tests\Tools\PHPUnitUtils;

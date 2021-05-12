@@ -20,11 +20,6 @@ class RemoveServicesTest extends BaseTestCase
      */
     protected $testObject;
 
-    /**
-     * @var ContainerBuilder $container
-     */
-    private $container;
-
     private $fakeService;
 
     protected function setUp(): void

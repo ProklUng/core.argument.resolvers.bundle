@@ -6,6 +6,9 @@ use Faker\Factory;
 use Faker\Generator;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Prokl\TestingTools\Tools\Container\BuildContainer;
+use Prokl\TestingTools\Traits\ExceptionAsserts;
+use Prokl\TestingTools\Traits\PHPUnitTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -14,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @since 05.12.2020
  */
-class BaseTestCase extends TestCase
+class BaseTestCase extends \Prokl\TestingTools\Base\BaseTestCase
 {
     use ExceptionAsserts;
     use PHPUnitTrait;
@@ -37,24 +40,15 @@ class BaseTestCase extends TestCase
     protected function setUp(): void
     {
         // Инициализация тестового контейнера.
-        static::$testContainer = container()->get('custom_arguments_resolvers.test.service_container')
-            ?: container();
+        $this->container = static::$testContainer = BuildContainer::getTestContainer(
+            [
+                'dev/test_container.yaml',
+                'services.yaml',
+                'listeners.yaml'
+            ],
+            '/Resources/config'
+        );
 
-        Mockery::resetContainer();
         parent::setUp();
-
-        $this->faker = Factory::create();
-    }
-
-    protected function tearDown(): void
-    {
-        // Сбросить тестовый контейнер.
-        static::$testContainer->reset();
-
-        parent::tearDown();
-
-        Mockery::close();
-
-        $this->testObject = null;
     }
 }
