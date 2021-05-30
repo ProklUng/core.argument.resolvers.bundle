@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Prokl\CustomArgumentResolverBundle\DependencyInjection;
 
-use Exception;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -50,6 +49,7 @@ class CustomArgumentResolverBundleExtension extends Extension
         );
 
         $loader->load('services.yaml');
+        $loader->load('resolvers.yaml');
         $loader->load('listeners.yaml');
 
         if (defined('B_PROLOG_INCLUDED') && B_PROLOG_INCLUDED === true) {
