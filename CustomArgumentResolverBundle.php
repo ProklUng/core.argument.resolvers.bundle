@@ -4,8 +4,12 @@ namespace Prokl\CustomArgumentResolverBundle;
 
 use Prokl\CustomArgumentResolverBundle\DependencyInjection\CompilerPass\RemoveServices;
 use Prokl\CustomArgumentResolverBundle\DependencyInjection\CustomArgumentResolverBundleExtension;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\HttpKernel\DependencyInjection\ControllerArgumentValueResolverPass;
+use Symfony\Component\HttpKernel\DependencyInjection\RegisterControllerArgumentLocatorsPass;
+use Symfony\Component\HttpKernel\DependencyInjection\RemoveEmptyControllerArgumentLocatorsPass;
 
 /**
  * Class CustomArgumentResolver
@@ -32,8 +36,10 @@ class CustomArgumentResolverBundle extends Bundle
 
         $removeDisabledService = new RemoveServices();
 
-        $container->addCompilerPass(
-            $removeDisabledService
-        );
+        $container->addCompilerPass($removeDisabledService);
+        $container->addCompilerPass(new ControllerArgumentValueResolverPass);
+        $container->addCompilerPass(new RegisterControllerArgumentLocatorsPass);
+        $container->addCompilerPass(new RemoveEmptyControllerArgumentLocatorsPass, PassConfig::TYPE_BEFORE_REMOVING);
+
     }
 }
