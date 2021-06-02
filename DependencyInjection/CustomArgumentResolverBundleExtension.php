@@ -49,7 +49,6 @@ class CustomArgumentResolverBundleExtension extends Extension
         );
 
         $loader->load('services.yaml');
-        $loader->load('resolvers.yaml');
         $loader->load('listeners.yaml');
 
         if (defined('B_PROLOG_INCLUDED') && B_PROLOG_INCLUDED === true) {
