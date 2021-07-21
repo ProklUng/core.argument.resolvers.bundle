@@ -1,0 +1,12 @@
+services:
+  # конфигурация по умолчанию в *этом* файле
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  cacher:
+    class: Prokl\CustomArgumentResolverBundle\Tests\Fixtures\Cacher\CacherService
+
+  dummy_service:
+    class: Prokl\CustomArgumentResolverBundle\Tests\Fixtures\Cacher\SampleService

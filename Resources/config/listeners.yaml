@@ -77,3 +77,25 @@ services:
     class: Prokl\CustomArgumentResolverBundle\Event\Listeners\FormUrlencodedTreatment
     tags:
       - { name: kernel.event_listener, event: kernel.request, method: handle, priority: 10 }
+
+  #####################
+  # Кэширование роутов
+  #####################
+
+  custom_arguments_resolvers.cache_load_response:
+    class: Prokl\CustomArgumentResolverBundle\Event\Listeners\CacheRoute\CacheLoadResponse
+    arguments: ['@custom_arguments_resolvers.cacher_response_base']
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: handle, priority: -50000 }
+
+  custom_arguments_resolvers.cache_save_response:
+    class: Prokl\CustomArgumentResolverBundle\Event\Listeners\CacheRoute\CacheSaveResponse
+    arguments: ['@custom_arguments_resolvers.cacher_response_base']
+    tags:
+      - { name: kernel.event_listener, event: kernel.terminate, method: handle, priority: 50000 }
+
+  custom_arguments_resolvers.cacher_response_base:
+    public: false
+    class: Prokl\CustomArgumentResolverBundle\Event\Listeners\CacheRoute\BaseCacheResponse
+    calls:
+      - setContainer: ['@service_container']

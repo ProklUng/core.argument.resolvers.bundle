@@ -55,3 +55,23 @@ custom_arguments_resolvers:
 - `custom_arguments_resolvers.argument_resolver.from_container` - ресолвинг аргументов из контейнера
 - `custom_arguments_resolvers.boot_trait` - bootable traits (по аналоги [c](https://medium.com/swlh/laravel-booting-and-initializing-models-with-traits-2f77059b1915))
 - `custom_arguments_resolvers.argument_resolver.user_permission_check` - проверка прав на роут
+
+## Прочее
+
+#### Кэширование роутов
+
+routes.yaml:
+
+```yaml
+foo_controller:
+  path: /foo/bar/
+  methods: GET
+  controller: 'Local\Controllers\FooController::action'
+  defaults:
+    _cacheble: true # Кэшировать
+    _cacher: 'example.cacher' # Сервис-кэшер, реализующий интерфейс Symfony\Contracts\Cache\CacheInterface
+```
+
+Ограничения:
+
+- кэшируются только GET запросы.
