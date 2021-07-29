@@ -75,3 +75,22 @@ foo_controller:
 Ограничения:
 
 - кэшируются только GET запросы.
+
+#### Ресолвинг аргументов контроллера из "делегированных" контейнеров
+
+Делегированный контейнер - любой сервис, возвращающий `Symfony\Component\DependencyInjection\ContainerInterface`,
+и содержащий в возвращаемом полноценный контейнер.
+
+##### Зачем?
+
+Чтобы можно было автовайрить аргументы из контейнеров модулей, плагинов и тому подобных мест.
+
+##### Конфигурирование
+
+```yaml
+  module_notifier_container:
+    class: Symfony\Component\DependencyInjection\ContainerInterface
+    factory: ['Proklung\Notifier\DI\Services', 'getInstance']
+    tags:
+      - { name: 'delegated.container' }
+```

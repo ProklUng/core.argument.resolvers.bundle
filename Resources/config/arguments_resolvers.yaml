@@ -1,0 +1,14 @@
+services:
+  # конфигурация по умолчанию в *этом* файле
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  # Поиск аргументов action контроллеров в делегированных контейнерах.
+  # Делегированный контейнер - Symfony\Component\DependencyInjection\ContainerInterface
+  custom_arguments_resolvers.argument_resolver.delegated:
+    class: Prokl\CustomArgumentResolverBundle\Service\ArgumentResolvers\DelegatingContainerArgumentResolver
+    arguments: [!tagged delegated.container]
+    tags:
+      - { name: controller.argument_value_resolver, priority: 1600 }
