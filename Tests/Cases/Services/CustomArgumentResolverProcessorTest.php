@@ -52,36 +52,6 @@ class CustomArgumentResolverProcessorTest extends BaseTestCase
     }
 
     /**
-     * inject().
-     *
-     * @return void
-     * @throws Exception
-     */
-//    public function testInject(): void
-//    {
-//        $request = new Request(
-//            [],
-//            [],
-//            [
-//                '_controller' => ['\Prokl\CustomArgumentResolverBundle\Tests\Samples\SampleControllerDependency', 'get'],
-//            ]
-//        );
-//
-//        /** @var ControllerArgumentsEvent $mockEvent */
-//        $mockEvent = $this->getMockControllerEvent($request);
-//
-//        $result = $this->testObject->inject($mockEvent);
-//
-//        $resultInjection = $result->getRequest()->attributes->get('obj');
-//
-//        $this->assertInstanceOf(
-//            SampleControllerDependency::class,
-//            $resultInjection,
-//            'Инжекция не прошла.'
-//        );
-//    }
-
-    /**
      * Разрешение переменных из контейнера.
      */
     public function testResolveVariableFromContainer(): void

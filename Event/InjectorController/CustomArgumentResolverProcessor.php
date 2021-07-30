@@ -307,7 +307,7 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
      */
     private function reflectionController($controller)
     {
-        if (stripos($controller, '::') !== false) {
+        if (is_string($controller) && stripos($controller, '::') !== false) {
             $controller = explode('::', $controller);
         }
 
