@@ -3,8 +3,8 @@
 namespace Prokl\CustomArgumentResolverBundle\Tests\Cases\ArgumentResolvers;
 
 use Exception;
-use Prokl\CustomArgumentResolverBundle\Event\Listeners\AjaxCall;
-use Prokl\CustomArgumentResolverBundle\Service\ArgumentResolvers\DelegatingContainerArgumentResolver;
+use Prokl\CustomArgumentResolverBundle\Service\ArgumentResolvers\DelegatedServiceValueResolver;
+use Prokl\CustomArgumentResolverBundle\Tests\Samples\FooController;
 use Prokl\CustomArgumentResolverBundle\Tests\Samples\FooService;
 use Prokl\CustomArgumentResolverBundle\Tests\Tools\BaseTestCase;
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
@@ -16,14 +16,14 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 /**
  * Class DelegatingContainerArgumentResolverTest
  * @package Prokl\CustomArgumentResolverBundle\Tests\Listeners
- * @coversDefaultClass DelegatingContainerArgumentResolver
+ * @coversDefaultClass DelegatedServiceValueResolver
  *
- * @since 29.07.2021
+ * @since 30.07.2021
  */
-class DelegatingContainerArgumentResolverTest extends BaseTestCase
+class DelegatedServiceValueResolverTest extends BaseTestCase
 {
     /**
-     * @var DelegatingContainerArgumentResolver $obTestObject Тестируемый объект.
+     * @var DelegatedServiceValueResolver $obTestObject Тестируемый объект.
      */
     protected $obTestObject;
 
@@ -42,7 +42,8 @@ class DelegatingContainerArgumentResolverTest extends BaseTestCase
             1
         );
 
-        $this->obTestObject = new DelegatingContainerArgumentResolver($iterable);
+        $this->obTestObject = new DelegatedServiceValueResolver($this->getOrdinaryContainer());
+        $this->obTestObject->setDelegatedContainers($iterable);
     }
 
     /**
@@ -61,7 +62,7 @@ class DelegatingContainerArgumentResolverTest extends BaseTestCase
             false
         );
 
-        $result = $this->obTestObject->supports(new Request(), $argument);
+        $result = $this->obTestObject->supports($this->getRequest(), $argument);
 
         $this->assertTrue($result, 'Сервис не зацепился.');
     }
@@ -82,9 +83,9 @@ class DelegatingContainerArgumentResolverTest extends BaseTestCase
             false
         );
 
-        $result = $this->obTestObject->supports(new Request(), $argument);
+        $result = $this->obTestObject->supports($this->getRequest(), $argument);
 
-        $this->assertFalse($result, 'Зацепился левый сервис.');
+        $this->assertTrue($result, 'Зацепился левый сервис.');
     }
 
     /**
@@ -104,7 +105,8 @@ class DelegatingContainerArgumentResolverTest extends BaseTestCase
             1
         );
 
-        $this->obTestObject = new DelegatingContainerArgumentResolver($iterable);
+        $this->obTestObject = new DelegatedServiceValueResolver($this->getOrdinaryContainer());
+        $this->obTestObject->setDelegatedContainers($iterable);
 
         $argument = new ArgumentMetadata(
             'foo',
@@ -114,7 +116,7 @@ class DelegatingContainerArgumentResolverTest extends BaseTestCase
             false
         );
 
-        $result = $this->obTestObject->supports(new Request(), $argument);
+        $result = $this->obTestObject->supports($this->getRequest(), $argument);
 
         $this->assertFalse($result, 'Зацепился сервис при пустом контейнере.');
     }
@@ -134,7 +136,7 @@ class DelegatingContainerArgumentResolverTest extends BaseTestCase
             false
         );
 
-        $result = $this->obTestObject->resolve(new Request(), $argument);
+        $result = $this->obTestObject->resolve($this->getRequest(), $argument);
 
         $array = iterator_to_array($result);
 
@@ -154,19 +156,21 @@ class DelegatingContainerArgumentResolverTest extends BaseTestCase
     {
         $argument = new ArgumentMetadata(
             'foo',
-            FakeService::class,
+            FooService::class,
             false,
             false,
             false
         );
 
-        $result = $this->obTestObject->resolve(new Request(), $argument);
+        $result = $this->obTestObject->resolve($this->getRequest(FakeService::class), $argument);
         $array = iterator_to_array($result);
 
         $this->assertNull($array[0], 'Проскочило что-то странное.');
-     }
+    }
 
     /**
+     * Делегированный контейнер.
+     *
      * @return ContainerBuilder
      */
     private function getDelegateContainer() : ContainerBuilder
@@ -180,5 +184,44 @@ class DelegatingContainerArgumentResolverTest extends BaseTestCase
         $container->compile(false);
 
         return $container;
+    }
+
+    /**
+     * @return ContainerBuilder
+     */
+    private function getOrdinaryContainer(): ContainerBuilder
+    {
+        $ordinaryContainer = new ContainerBuilder();
+        $ordinaryContainer->setDefinition(
+            FooController::class,
+            new Definition(FooController::class)
+        )->setPublic(true);
+
+        $ordinaryContainer->compile(false);
+
+        return $ordinaryContainer;
+    }
+
+    /**
+     * Request.
+     *
+     * @param string $foo
+     *
+     * @return Request
+     */
+    private function getRequest(string $foo = FooService::class): Request
+    {
+        $request = new Request();
+        $request->attributes->set(
+            '_controller',
+            'Prokl\CustomArgumentResolverBundle\Tests\Samples\FooController::action'
+        );
+
+        $request->attributes->set(
+            'foo',
+            '@' . $foo
+        );
+
+        return $request;
     }
 }

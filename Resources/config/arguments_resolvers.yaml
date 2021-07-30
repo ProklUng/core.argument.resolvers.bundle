@@ -12,3 +12,15 @@ services:
     arguments: [!tagged delegated.container]
     tags:
       - { name: controller.argument_value_resolver, priority: 1600 }
+
+
+  # Заместитель ServiceResolver для случаев с делегированными контейнерами
+  # Должен выполняться раньше, чем ServiceResolver.
+  argument_resolver.delegated_service:
+    class: Prokl\CustomArgumentResolverBundle\Service\ArgumentResolvers\DelegatedServiceValueResolver
+    calls:
+      - setDelegatedContainers: [!tagged delegated.container]
+    tags:
+      - {name: controller.argument_value_resolver, priority: 60}
+
+  Prokl\CustomArgumentResolverBundle\Service\ArgumentResolvers\DelegatedServiceValueResolver: '@argument_resolver.delegated_service'
