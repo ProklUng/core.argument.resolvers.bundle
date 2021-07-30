@@ -3,6 +3,7 @@
 namespace Prokl\CustomArgumentResolverBundle\Event\InjectorController;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 
 /**
@@ -12,17 +13,18 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
  * @codeCoverageIgnore
  *
  * @since 08.10.2020 Сеттер контейнера.
+ * @since 30.07.2021 Move to ControllerArgumentsEvent.
  */
 interface InjectorControllerInterface
 {
     /**
      * Инжекция аргументов в контроллер.
      *
-     * @param ControllerEvent $event
+     * @param ControllerArgumentsEvent $event Событие.
      *
-     * @return ControllerEvent
+     * @return ControllerArgumentsEvent
      */
-    public function inject(ControllerEvent $event) : ControllerEvent;
+    public function inject(ControllerArgumentsEvent $event) : ControllerArgumentsEvent;
 
     /**
      * Сеттер сервис-контейнера.

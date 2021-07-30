@@ -23,14 +23,14 @@ services:
     tags:
       - { name: kernel.event_listener, event: kernel.controller, method: handle, priority: 60 }
 
-  # Основной ресолвер аргументов.
+  # Основной кастомный ресолвер аргументов.
   custom_arguments_resolvers.argument_resolver.params:
     class: Prokl\CustomArgumentResolverBundle\Event\Listeners\ResolverParamsController
     arguments: ['@custom_arguments_resolvers.controller_argument.processor', '%custom_arguments_resolvers%']
     calls:
       - setContainer: ['@service_container']
     tags:
-      - { name: kernel.event_listener, event: kernel.controller, method: handle, priority: 55 }
+      - { name: kernel.event_listener, event: kernel.controller_arguments, method: handle, priority: 55 }
 
   # Проверка вызова на AJAX.
   custom_arguments_resolvers.argument_resolver.ajax_call:

@@ -12,7 +12,7 @@ use ReflectionMethod;
 use ReflectionObject;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 
 /**
  * Class CustomArgumentResolverProcessor
@@ -31,6 +31,7 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
  * @since 03.12.2020 Поддержка аттрибутов, как без $, так и с ним. В routes.yaml можно писать
  * как угодно. Для совместимости с нативным Symfony.
  * @since 02.02.2021 Выпиливание ResolveParamsFromContainer.
+ * @since 30.07.2021 Move to ControllerArgumentsEvent.
  */
 /** @psalm-suppress PropertyNotSetInConstructor */
 class CustomArgumentResolverProcessor implements InjectorControllerInterface
@@ -67,7 +68,7 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
      *
      * @throws Exception
      */
-    public function inject(ControllerEvent $event) : ControllerEvent
+    public function inject(ControllerArgumentsEvent $event) : ControllerArgumentsEvent
     {
         return $this->injectArgumentsToController($event);
     }
@@ -75,10 +76,9 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
     /**
      * Инжекция зависимостей в контроллер.
      *
-     * @param ControllerEvent $event
+     * @param ControllerArgumentsEvent $event Событие.
      *
-     * @return ControllerEvent
-     *
+     * @return ControllerArgumentsEvent
      * @throws Exception
      *
      * @since 06.09.2020 Рефакторинг в сторону упрощения. Доработка разрешения переменных.
@@ -86,18 +86,22 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
      * @since 03.10.2020 Долгожданное исправление ошибки с разрешением сервисов из контейнера.
      * @since 12.10.2020 Разрешитель зависимостей заменен на ResolveDependencyMakerContainerAware.
      */
-    private function injectArgumentsToController(ControllerEvent $event): ControllerEvent
-    {
+    private function injectArgumentsToController(
+        ControllerArgumentsEvent $event
+    ): ControllerArgumentsEvent {
         try {
             $arArguments = $this->getArguments(
                 $event->getRequest(),
                 $event->getController(),
+                $event->getArguments()
             );
         } catch (ReflectionException $e) {
-            /** @psalm-suppress PossiblyNullReference */
-            $this->container->get('die_text')->die(
-                'Ошибка в инжекции данных в конструктор контроллера ' . static::class
-            );
+            if ($this->container->has('die_text')) {
+                /** @psalm-suppress PossiblyNullReference */
+                $this->container->get('die_text')->die(
+                    'Ошибка в инжекции данных в конструктор контроллера '.static::class
+                );
+            }
 
             return $event; // Для тестов.
         }
@@ -233,17 +237,18 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
     /**
      * Получить аргументы контроллера.
      *
-     * @param Request $request    Request.
-     * @param mixed   $controller Контроллер.
+     * @param Request $request       Request.
+     * @param mixed   $controller    Контроллер.
+     * @param array   $eventResolved Аргументы отресолвленные до (нормальными ресловерами).
      *
      * @return array
      * @throws ReflectionException
      */
-    private function getArguments(Request $request, $controller): array
+    private function getArguments(Request $request, $controller, array $eventResolved): array
     {
         $reflection = $this->reflectionController($controller);
 
-        return $this->doGetArguments($request, $reflection->getParameters());
+        return $this->doGetArguments($request, $reflection->getParameters(), $eventResolved);
     }
 
     /**
@@ -302,6 +307,10 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
      */
     private function reflectionController($controller)
     {
+        if (stripos($controller, '::') !== false) {
+            $controller = explode('::', $controller);
+        }
+
         if (is_array($controller)) {
             $reflection = new ReflectionMethod($controller[0], $controller[1]);
         } elseif (is_object($controller) && !$controller instanceof Closure) {
@@ -317,20 +326,28 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
     /**
      * Сама механика получения аргументов.
      *
-     * @param Request $request     Запрос.
-     * @param array   $parameters  Параметры.
+     * @param Request $request       Запрос.
+     * @param array   $parameters    Параметры.
+     * @param array   $eventResolved Параметры отресолвленные до (нормальными ресолверами).
      *
      * @return array
      *
      * @since 03.12.2020 Поддержка аттрибутов, как без $, так и с ним. В routes.yaml можно писать
      * как угодно. Для совместимости с нативным Symfony.
      */
-    private function doGetArguments(Request $request, array $parameters): array
-    {
+    private function doGetArguments(
+        Request $request,
+        array $parameters,
+        array $eventResolved
+    ): array {
         $attributes = $request->attributes->all();
         $arguments = [];
 
-        foreach ($parameters as $param) {
+        foreach ($parameters as $key => $param) {
+            if (array_key_exists($key, $eventResolved)) {
+                $arguments[$param->name] = $eventResolved[$key];
+            }
+
             if (array_key_exists($param->name, $attributes)
                 ||
                 array_key_exists('$' . $param->name, $attributes)

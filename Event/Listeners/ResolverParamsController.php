@@ -5,11 +5,10 @@ namespace Prokl\CustomArgumentResolverBundle\Event\Listeners;
 use Exception;
 use Prokl\CustomArgumentResolverBundle\Event\Exceptions\InvalidConfigArgumentException;
 use Prokl\CustomArgumentResolverBundle\Event\InjectorController\InjectorControllerInterface;
-use Prokl\CustomArgumentResolverBundle\Event\Interfaces\OnControllerRequestHandlerInterface;
 use ReflectionException;
 use ReflectionMethod;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 
 /**
  * Class ResolverParamsController
@@ -20,8 +19,9 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
  * не оправдал. Плюс мелкие доработки. Нужно ли обрабатывать этот контроллер вынесено в отдельную функцию.
  * @since 05.12.2020 Убрал EventSubscriberInterface, чтобы предотвратить дублирующий запуск листенера.
  * @since 05.01.2021 Рефакторинг.
+ * @since 30.07.2021 Move to ControllerArgumentsEvent.
  */
-class ResolverParamsController implements OnControllerRequestHandlerInterface
+class ResolverParamsController
 {
     use ContainerAwareTrait;
 
@@ -52,13 +52,12 @@ class ResolverParamsController implements OnControllerRequestHandlerInterface
     /**
      * Разрешить параметры контроллера.
      *
-     * @param ControllerEvent $event Объект события.
+     * @param ControllerArgumentsEvent $event Объект события.
      *
      * @return void
-     *
      * @throws Exception
      */
-    public function handle(ControllerEvent $event): void
+    public function handle(ControllerArgumentsEvent $event): void
     {
         $controller = $event->getController();
 
