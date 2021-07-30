@@ -26,6 +26,7 @@ services:
       - '@custom_arguments_resolvers.ignored.autowiring.controller.arguments'
     calls:
       - setContainer: ['@service_container']
+      - setDelegatedContainers: [!tagged delegated.container]
 
   Prokl\CustomArgumentResolverBundle\Event\InjectorController\CustomArgumentResolverProcessor: '@custom_arguments_resolvers.controller_argument.processor'
   Prokl\CustomArgumentResolverBundle\Event\InjectorController\InjectorControllerInterface: '@custom_arguments_resolvers.controller_argument.processor'

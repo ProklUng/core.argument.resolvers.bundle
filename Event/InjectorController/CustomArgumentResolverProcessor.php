@@ -4,13 +4,17 @@ namespace Prokl\CustomArgumentResolverBundle\Event\InjectorController;
 
 use Closure;
 use Exception;
+use LogicException;
 use Prokl\CustomArgumentResolverBundle\Service\ResolversDependency\ResolveDependencyMakerContainerAware;
 use Prokl\CustomArgumentResolverBundle\Service\Utils\IgnoredAutowiringControllerParamsBag;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionObject;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 
@@ -33,10 +37,16 @@ use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
  * @since 02.02.2021 Выпиливание ResolveParamsFromContainer.
  * @since 30.07.2021 Move to ControllerArgumentsEvent.
  */
+
 /** @psalm-suppress PropertyNotSetInConstructor */
 class CustomArgumentResolverProcessor implements InjectorControllerInterface
 {
     use ContainerAwareTrait;
+
+    /**
+     * @var array $delegatedContainers Делегированные контейнеры.
+     */
+    private $delegatedContainers = [];
 
     /**
      * @var ResolveDependencyMakerContainerAware $resolveDependencyMaker Разрешитель зависимостей.
@@ -70,25 +80,6 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
      */
     public function inject(ControllerArgumentsEvent $event) : ControllerArgumentsEvent
     {
-        return $this->injectArgumentsToController($event);
-    }
-
-    /**
-     * Инжекция зависимостей в контроллер.
-     *
-     * @param ControllerArgumentsEvent $event Событие.
-     *
-     * @return ControllerArgumentsEvent
-     * @throws Exception
-     *
-     * @since 06.09.2020 Рефакторинг в сторону упрощения. Доработка разрешения переменных.
-     * @since 29.09.2020 Доработка в сторону инжекции зависимостей от Symfony.
-     * @since 03.10.2020 Долгожданное исправление ошибки с разрешением сервисов из контейнера.
-     * @since 12.10.2020 Разрешитель зависимостей заменен на ResolveDependencyMakerContainerAware.
-     */
-    private function injectArgumentsToController(
-        ControllerArgumentsEvent $event
-    ): ControllerArgumentsEvent {
         try {
             $arArguments = $this->getArguments(
                 $event->getRequest(),
@@ -175,6 +166,41 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
         }
 
         return $event;
+    }
+
+    /**
+     * @param mixed $delegatedContainers
+     *
+     * @return CustomArgumentResolverProcessor
+     */
+    public function setDelegatedContainers($delegatedContainers): self
+    {
+        $iterator = $delegatedContainers->getIterator();
+        $array = iterator_to_array($iterator);
+        $this->delegatedContainers = $array;
+
+        return $this;
+    }
+
+    /**
+     * Проверить сервис в делегированных контейнерах.
+     *
+     * @param string $serviceId ID сервиса.
+     *
+     * @return mixed
+     * @throws LogicException Когда сервис не найден.
+     */
+    private function checkServiceInDelegateContainer(string $serviceId)
+    {
+        foreach ($this->delegatedContainers as $container) {
+            if ($container->has($serviceId)) {
+                return $container->get($serviceId);
+            }
+        }
+
+        throw new ServiceNotFoundException(
+            $serviceId . ' not found in main or delegated containers.'
+        );
     }
 
     /**
@@ -344,6 +370,7 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
         $arguments = [];
 
         foreach ($parameters as $key => $param) {
+            // Уже отресолвлено нормальными обработчиками
             if (array_key_exists($key, $eventResolved)) {
                 $arguments[$param->name] = $eventResolved[$key];
             }
@@ -395,8 +422,18 @@ class CustomArgumentResolverProcessor implements InjectorControllerInterface
 
         // Если использован алиас сервиса, то попробовать получить его из контейнера.
         if (is_string($argItem) && strpos($argItem, '@') === 0) {
-            $resolvedService = $this->container->get(ltrim($argItem, '@'));
+            // Основной контейнер.
+            try {
+                $resolvedService = $this->container->get(ltrim($argItem, '@'));
 
+                if ($resolvedService !== null) {
+                    return $resolvedService;
+                }
+            } catch (Exception $e) {
+            }
+
+            // Попытка поискать сервис в делегированных контейнерах.
+            $resolvedService = $this->checkServiceInDelegateContainer(ltrim($argItem, '@'));
             if ($resolvedService !== null) {
                 return $resolvedService;
             }

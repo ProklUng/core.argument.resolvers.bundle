@@ -252,6 +252,7 @@ class CustomArgumentResolverProcessorTest extends BaseTestCase
      * Разрешение Invalid service alias.
      *
      * @return void
+     * @throws Exception
      */
     public function testDefaultsResolveInvalidServiceAlias(): void
     {
