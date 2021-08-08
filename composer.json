@@ -33,6 +33,7 @@
     "proklung/base-exception": "^1.0"
   },
   "require-dev": {
-    "proklung/phpunit-testing-tools": "^1.0"
+    "proklung/phpunit-testing-tools": "^1.0",
+    "icanhazstring/composer-unused": "^0.7.5"
   }
 }
